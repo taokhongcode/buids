@@ -1,0 +1,1472 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEnglish - Học Từ Vựng Tiếng Anh Hiệu Quả</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* --- Biến CSS cho màu sắc và kích thước --- */
+        :root {
+            --primary-color: #1e90ff; /* Màu xanh dương chủ đạo */
+            --secondary-color: #f0f2f5; /* Màu nền phụ */
+            --text-color: #333; /* Màu chữ chính */
+            --light-gray: #f8f8f8; /* Màu nền nhẹ */
+            --border-color: #ddd; /* Màu đường viền */
+            --sidebar-width: 250px; /* Chiều rộng sidebar */
+        }
+
+        /* --- CSS chung cho body --- */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex; /* Sử dụng flexbox cho layout chính */
+        }
+
+        /* --- CSS cho Sidebar (Menu bên trái) --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
+            background: #fff;
+            position: sticky; /* Giữ sidebar cố định khi cuộn */
+            top: 0;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05); /* Đổ bóng nhẹ */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+
+        .sidebar nav {
+            width: 100%;
+        }
+
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 17px;
+            transition: background 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
+        }
+
+        .sidebar nav a i {
+            margin-right: 15px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .sidebar nav a:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        .sidebar nav a:hover i {
+            color: white;
+        }
+
+        .sidebar nav a.active {
+            background: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+        .sidebar nav a.active i {
+            color: white;
+        }
+
+        /* --- CSS cho Main Content (Nội dung chính) --- */
+        .main-content {
+            flex-grow: 1; /* Cho phép nội dung chính mở rộng */
+            padding: 20px 30px;
+            overflow-y: auto; /* Cho phép cuộn nếu nội dung dài */
+        }
+
+        /* --- CSS cho Header (Tiêu đề và thanh tìm kiếm) --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            background: #fff;
+            border-bottom: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            color: var(--primary-color);
+        }
+
+        .search-input {
+            padding: 8px 15px;
+            width: 350px;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(30, 144, 255, 0.3);
+        }
+
+        /* --- CSS cho Thông báo --- */
+        .info-message {
+            color: #555;
+            text-align: center;
+            margin-top: 30px;
+            background: #e9f5ff;
+            border: 1px solid #cce7ff;
+            padding: 20px;
+            border-radius: 8px;
+            line-height: 1.6;
+        }
+        .info-message strong {
+            color: var(--primary-color);
+        }
+
+        /* --- CSS cho khu vực hành động (Thêm từ) --- */
+        .action-area {
+            margin-top: 30px;
+            text-align: center; /* Căn giữa các block */
+            display: flex;
+            flex-direction: column;
+            gap: 30px; /* Khoảng cách giữa các phần thêm từ */
+        }
+
+        /* --- CSS cho phần thêm nhiều từ vựng thủ công --- */
+        .add-multiple-vocab-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            width: fit-content;
+            max-width: 90%;
+            margin-left: auto; /* Căn giữa */
+            margin-right: auto; /* Căn giữa */
+            text-align: left; /* Để tiêu đề và hint không bị căn giữa */
+        }
+
+        .add-multiple-vocab-section h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .main-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 25px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 17px;
+            font-weight: bold;
+            transition: background 0.3s ease, transform 0.2s ease;
+            border: none;
+        }
+        .main-button:hover {
+            background: #1565c0;
+            transform: translateY(-2px);
+        }
+        .main-button i {
+            font-size: 18px;
+        }
+
+        /* Nút thêm từ trong khu vực nhập liệu */
+        .add-multiple-vocab-section .main-button {
+            display: block; /* Nút chiếm toàn bộ chiều rộng */
+            width: fit-content; /* Điều chỉnh kích thước nút */
+            margin: 0 auto; /* Căn giữa nút */
+            padding: 10px 20px;
+            font-size: 16px;
+            min-width: 120px;
+        }
+
+        .add-multiple-vocab-section .format-hint {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 15px;
+            line-height: 1.5;
+            text-align: left; /* Căn trái hint */
+        }
+
+        .add-multiple-vocab-section textarea {
+            width: calc(100% - 20px); /* Đảm bảo padding không làm tràn */
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            resize: vertical; /* Cho phép thay đổi chiều cao */
+            min-height: 100px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .add-multiple-vocab-section textarea:focus {
+            border-color: var(--primary-color);
+        }
+
+        /* --- CSS cho danh sách và thẻ từ vựng --- */
+        .vocabulary-list {
+            display: grid; /* Dùng Grid để sắp xếp các thẻ từ vựng */
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Responsive grid */
+            gap: 20px; /* Khoảng cách giữa các thẻ */
+            margin-top: 40px;
+        }
+
+        .vocab-card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Đổ bóng nổi bật hơn */
+            transition: transform 0.2s ease;
+            position: relative; /* Dùng cho nút phát âm */
+            overflow: hidden; /* Để bo góc */
+        }
+        .vocab-card:hover {
+            transform: translateY(-5px); /* Hiệu ứng nổi lên khi hover */
+        }
+
+        .vocab-card h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 22px;
+            text-transform: capitalize; /* Viết hoa chữ cái đầu */
+        }
+
+        .vocab-card .pronunciation {
+            font-style: italic;
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 10px;
+        }
+
+        .vocab-card .definition {
+            color: var(--text-color);
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        /* Styles for audio buttons in vocab list */
+        .vocab-card .audio-buttons {
+            position: absolute;
+            top: 15px;
+            right: 11px; /* Adjusted to be slightly more to the right */
+            display: flex;
+            gap: 5px;
+        }
+        .vocab-card .audio-buttons button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 18px;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+            padding: 5px;
+        }
+        .vocab-card .audio-buttons button:hover {
+            color: #1565c0;
+            transform: translateY(-1px);
+        }
+        .vocab-card .audio-buttons button:active {
+            transform: scale(0.9);
+        }
+
+        /* --- CSS cho Thẻ luyện tập (flashcard) --- */
+        .practice-card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px; /* Chiều cao tối thiểu cho khu vực luyện tập */
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .practice-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            min-height: 300px; /* Tăng chiều cao tối thiểu để chứa thêm nội dung */
+            justify-content: center;
+            transition: transform 0.3s ease-out;
+            position: relative; /* Dùng cho các nút audio/repeat */
+            border: 2px solid transparent; /* Default transparent border */
+        }
+
+        .practice-card h2 {
+            color: var(--primary-color);
+            font-size: 36px;
+            margin-bottom: 10px;
+            min-height: 40px; /* Đảm bảo chiều cao không đổi khi thay đổi nội dung */
+        }
+        .practice-card p {
+            font-size: 20px;
+            color: #555;
+            min-height: 30px; /* Đảm bảo chiều cao không đổi */
+        }
+        .practice-card .english-description {
+            font-size: 18px;
+            color: #777;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .practice-card .meaning-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .practice-card .meaning-option-button {
+            padding: 10px 15px;
+            font-size: 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: #f8f8f8;
+            color: var(--text-color);
+            transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .practice-card .meaning-option-button:hover {
+            background-color: #e0e0e0;
+            border-color: #c0c0c0;
+        }
+
+        .practice-card .meaning-option-button.correct {
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border-color: #4CAF50;
+            font-weight: bold;
+        }
+
+        .practice-card .meaning-option-button.incorrect {
+            background-color: #f44336; /* Red */
+            color: white;
+            border-color: #f44336;
+            font-weight: bold;
+        }
+
+        .practice-card .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .practice-card .correct-feedback {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+        }
+        .practice-card .incorrect-feedback {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            display: none;
+        }
+        .practice-card.is-correct {
+            border: 2px solid green;
+            box-shadow: 0 6px 15px rgba(0, 128, 0, 0.2);
+        }
+        .practice-card.is-incorrect {
+            border: 2px solid red;
+            box-shadow: 0 6px 15px rgba(255, 0, 0, 0.2);
+        }
+
+        /* New styles for audio and repeat buttons in practice card */
+        .practice-card .card-audio-controls {
+            position: absolute;
+            top: 15px;
+            right: 11px; /* Adjusted to be slightly more to the right */
+            display: flex;
+            gap: 5px;
+        }
+        .practice-card .card-audio-controls button {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+            padding: 5px;
+            display: flex; /* Để căn giữa icon và text nếu có */
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+        }
+        .practice-card .card-audio-controls button:hover {
+            color: #1565c0;
+            transform: translateY(-1px);
+        }
+        .practice-card .card-audio-controls button:active {
+            transform: scale(0.9);
+        }
+
+        /* --- New CSS for Topic Management --- */
+        .topic-management {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
+        .topic-management h3 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .topic-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .topic-input-group input[type="text"] {
+            flex-grow: 1;
+            max-width: 300px;
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            font-size: 16px;
+        }
+
+        .topic-input-group button {
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .topic-input-group button:hover {
+            background-color: #1565c0;
+        }
+
+        .topic-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .topic-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background-color 0.2s ease, border-color 0.2s ease;
+        }
+
+        .topic-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .topic-button:hover:not(.active) {
+            background-color: #e0e0e0;
+            border-color: #c0c0c0;
+        }
+
+        .topic-button .delete-topic-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 16px;
+            margin-left: 8px;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 0;
+            line-height: 1; /* Aligns the icon better */
+        }
+        .topic-button.active .delete-topic-btn {
+            color: white; /* White icon for active topic */
+        }
+        .topic-button .delete-topic-btn:hover {
+            color: red;
+        }
+        .topic-button.active .delete-topic-btn:hover {
+            color: #ffcccc; /* Lighter red on hover for active topic */
+        }
+
+        /* Hide add vocab section and vocabulary list if no topic selected */
+        .action-area.hidden, .vocabulary-list.hidden {
+            display: none;
+        }
+
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column; /* Xếp chồng sidebar và nội dung chính */
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                padding: 10px 0;
+            }
+            .sidebar h2 {
+                margin-bottom: 20px;
+            }
+            .sidebar nav {
+                display: flex;
+                justify-content: space-around;
+                flex-wrap: wrap;
+            }
+            .sidebar nav a {
+                padding: 8px 15px;
+                font-size: 15px;
+                flex-grow: 1;
+                text-align: center;
+                justify-content: center;
+            }
+            .sidebar nav a i {
+                margin-right: 5px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            .header h1 {
+                margin-bottom: 10px;
+            }
+            .search-input {
+                width: 100%;
+            }
+
+            .vocabulary-list {
+                grid-template-columns: 1fr; /* Một cột trên màn hình nhỏ */
+            }
+
+            .add-multiple-vocab-section {
+                width: 100%;
+                max-width: 100%;
+                padding: 15px;
+            }
+            .add-multiple-vocab-section textarea,
+            .add-multiple-vocab-section .main-button {
+                width: 100%; /* Chiếm toàn bộ chiều rộng */
+                min-width: unset; /* Bỏ giới hạn tối thiểu */
+            }
+            .add-multiple-vocab-section textarea {
+                width: calc(100% - 20px); /* Bù trừ padding */
+            }
+
+            .practice-card {
+                padding: 20px;
+            }
+            .practice-card h2 {
+                font-size: 30px;
+            }
+            .practice-card p {
+                font-size: 18px;
+            }
+            .practice-card .meaning-option-button {
+                font-size: 16px;
+                padding: 10px 15px;
+            }
+            .practice-card .action-buttons button {
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+            .practice-card .card-audio-controls {
+                top: 10px;
+                right: 10px;
+                font-size: 18px;
+            }
+            .practice-card .card-audio-controls button {
+                font-size: 16px;
+            }
+
+            .topic-input-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .topic-input-group input[type="text"] {
+                max-width: unset;
+                width: 100%;
+            }
+            .topic-list {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar nav a {
+                padding: 10px;
+                font-size: 14px;
+            }
+            .sidebar h2 {
+                font-size: 20px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .main-button {
+                padding: 10px 20px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>LEnglish</h2>
+        <nav>
+            <a href="#" id="vocabLink" class="active"><i class="fas fa-lightbulb"></i> Từ vựng</a>
+            <a href="#" id="practiceLink"><i class="fas fa-dumbbell"></i> Luyện tập</a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div id="vocabularySection">
+            <div class="header">
+                <h1>Từ Vựng Của Bạn</h1>
+                <input type="text" class="search-input" placeholder="Tìm kiếm từ vựng hoặc tra từ điển...">
+            </div>
+
+            <div class="topic-management">
+                <h3>Quản lý Chủ đề</h3>
+                <div class="topic-input-group">
+                    <input type="text" id="newTopicName" placeholder="Tên chủ đề mới (ví dụ: Food, Travel)">
+                    <button id="addTopicButton"><i class="fas fa-plus"></i> Thêm chủ đề</button>
+                </div>
+                <div class="topic-list" id="topicList">
+                    </div>
+                <div id="topic-status" style="margin-top: 10px; font-size: 14px; display: none;"></div>
+            </div>
+
+            <div class="action-area" id="actionArea">
+                <div class="add-multiple-vocab-section">
+                    <h3>Thêm từ vựng cho chủ đề: <span id="currentTopicDisplay"></span></h3>
+                    <p class="format-hint">Dán danh sách từ vựng vào đây theo định dạng: **Từ vựng: Nghĩa (Phiên âm) \[Mô tả tiếng Anh\]** hoặc **Từ vựng, Nghĩa, Phiên âm, Mô tả tiếng Anh** (mỗi từ một dòng).</p>
+                    <textarea id="multipleVocabInput" placeholder="Ví dụ:
+Hello: Xin chào (/həˈloʊ/) [A greeting]
+Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
+                    <button class="main-button" id="addMultipleVocabButton">
+                        <i class="fas fa-plus-circle"></i> Thêm nhiều từ
+                    </button>
+                </div>
+                <div id="add-vocab-status" style="margin-top: 10px; font-size: 14px; display: none;"></div>
+            </div>
+
+            <div class="vocabulary-list" id="vocabularyList">
+                </div>
+            <p id="noTopicSelectedMessage" style="text-align: center; color: #777; margin-top: 20px;">Vui lòng chọn hoặc thêm một chủ đề để xem và quản lý từ vựng.</p>
+
+        </div>
+
+        <div id="practiceSection" style="display: none;">
+            <div class="header">
+                <h1>Luyện Tập Từ Vựng</h1>
+            </div>
+
+            <div class="topic-management" style="margin-bottom: 25px;">
+                <h3>Chọn Chủ đề để luyện tập</h3>
+                <div class="topic-list" id="practiceTopicList">
+                    </div>
+                <p id="noPracticeTopicSelectedMessage" style="text-align: center; color: #777; margin-top: 10px; display: none;">Vui lòng chọn ít nhất một chủ đề để bắt đầu luyện tập.</p>
+            </div>
+
+
+            <div class="practice-card-container">
+                <div class="practice-card" id="practiceCard">
+                    <div class="card-audio-controls">
+                        <button id="playUsAudioPractice" title="Phát âm tiếng Anh Mỹ"><i class="fas fa-volume-up"></i> US</button>
+                        <button id="playUkAudioPractice" title="Phát âm tiếng Anh Anh"><i class="fas fa-volume-up"></i> UK</button>
+                        <button id="repeatAudioPractice" title="Phát âm lại"><i class="fas fa-redo"></i></button>
+                    </div>
+
+                    <h2 id="currentWord"></h2>
+                    <p class="pronunciation" id="currentPronunciation"></p>
+                    <p class="english-description" id="englishDescription"></p>
+                    <div class="meaning-options" id="meaningOptions"></div>
+
+                    <p class="correct-feedback" id="correctFeedback">Chính xác!</p>
+                    <p class="incorrect-feedback" id="incorrectFeedback">Sai rồi!</p>
+                </div>
+                 <button class="main-button" id="startPracticeButton" style="margin-top: 20px;"><i class="fas fa-play"></i> Bắt đầu luyện tập</button>
+                 <button class="main-button" id="endPracticeButton" style="margin-top: 10px; background-color: #f44336; display: none;"><i class="fas fa-stop"></i> Kết thúc luyện tập</button>
+                 <p id="practiceEmptyMessage" style="text-align: center; color: #777; display: none;">Chưa có từ vựng nào để luyện tập. Hãy thêm từ ở mục "Từ vựng"!</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Dữ liệu từ vựng mẫu ban đầu (được tổ chức theo chủ đề)
+        let vocabularyData = {
+            "Cơ bản": [
+                { word: "Hello", meaning: "Xin chào", pronunciation: "/həˈloʊ/", englishDefinition: "A greeting, used when meeting someone or someone or starting a conversation.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/hello--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/hello--_gb_1.mp3" },
+                { word: "Goodbye", meaning: "Tạm biệt", pronunciation: "/ˌɡʊdˈbaɪ/", englishDefinition: "A farewell, used when leaving someone.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/goodbye--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/goodbye--_gb_1.mp3" },
+                { word: "Please", meaning: "Làm ơn / Xin vui lòng", pronunciation: "/pliːz/", englishDefinition: "Used to make a polite request or demand.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/please--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/please--_gb_1.mp3" },
+                { word: "Thank you", meaning: "Cảm ơn bạn", pronunciation: "/ˈθæŋk juː/", englishDefinition: "An expression of gratitude.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/thank_yu--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/thank_you--_gb_1.mp3" },
+                { word: "Yes", meaning: "Vâng / Có", pronunciation: "/jes/", englishDefinition: "Used to affirm or agree.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/yes--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/yes--_gb_1.mp3" },
+                { word: "No", meaning: "Không", pronunciation: "/noʊ/", englishDefinition: "Used to negate or refuse.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/no--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/no--_gb_1.mp3" },
+                { word: "Excuse me", meaning: "Xin lỗi (khi muốn thu hút sự chú ý hoặc đi qua)", pronunciation: "/ɪkˈskjuːs miː/", englishDefinition: "Used to politely get someone's attention or apologize for a minor offense.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/excuse_me--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/excuse_me--_gb_1.mp3" },
+                { word: "Sorry", meaning: "Xin lỗi (khi gây ra lỗi)", pronunciation: "/ˈsɒri/", englishDefinition: "Feeling regret or penitence.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/sorry--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/sorry--_gb_1.mp3" },
+                { word: "Water", meaning: "Nước", pronunciation: "/ˈwɔːtər/", englishDefinition: "A colorless, transparent, odorless liquid that forms the seas, lakes, rivers, and rain and is the basis of the fluids of living organisms.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/water--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/water--_gb_1.mp3" },
+                { word: "Food", meaning: "Đồ ăn / Thức ăn", pronunciation: "/fuːd/", englishDefinition: "Any nutritious substance that people or animals eat or drink, or that plants absorb, in order to maintain life and growth.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/food--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/food--_gb_1.mp3" },
+                { word: "Help", meaning: "Giúp đỡ / Cứu", pronunciation: "/help/", englishDefinition: "Make it easier for (someone) to do something by offering one's services or resources.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/help--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/help--_gb_1.mp3" },
+                { word: "Home", meaning: "Nhà", pronunciation: "/hoʊm/", englishDefinition: "The place where one lives permanently, especially as a member of a family or household.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/home--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/home--_gb_1.mp3" },
+                { word: "Friend", meaning: "Bạn bè", pronunciation: "/frend/", englishDefinition: "A person whom one knows and with whom one has a bond of mutual affection.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/friend--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/friend--_gb_1.mp3" },
+                { word: "Family", meaning: "Gia đình", pronunciation: "/ˈfæməli/", englishDefinition: "A group consisting of parents and children living together in a household.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/family--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/family--_gb_1.mp3" },
+                { word: "Love", meaning: "Yêu / Tình yêu", pronunciation: "/lʌv/", englishDefinition: "An intense feeling of deep affection.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/love--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/love--_gb_1.mp3" },
+                { word: "Happy", meaning: "Vui vẻ / Hạnh phúc", pronunciation: "/ˈhæpi/", englishDefinition: "Feeling or showing pleasure or contentment.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/happy--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/happy--_gb_1.mp3" },
+                { word: "Sad", meaning: "Buồn bã", pronunciation: "/sæd/", englishDefinition: "Feeling or showing sorrow; unhappy.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/sad--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/sad--_gb_1.mp3" },
+                { word: "Big", meaning: "To / Lớn", pronunciation: "/bɪɡ/", englishDefinition: "Of considerable size or extent.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/big--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/big--_gb_1.mp3" },
+                { word: "Small", meaning: "Nhỏ", pronunciation: "/smɔːl/", englishDefinition: "Of a size that is less than normal or usual.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/small--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/small--_gb_1.mp3" },
+                { word: "Good morning", meaning: "Chào buổi sáng", pronunciation: "/ˌɡʊd ˈmɔːrnɪŋ/", englishDefinition: "A greeting used in the morning.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/good_morning--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/good_morning--_gb_1.mp3" }
+            ],
+            "Động vật": [
+                { word: "Cat", meaning: "Mèo", pronunciation: "/kæt/", englishDefinition: "A small domesticated carnivorous mammal with soft fur, a short snout, and retractable claws.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/cat--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/cat--_gb_1.mp3" },
+                { word: "Dog", meaning: "Chó", pronunciation: "/dɒɡ/", englishDefinition: "A domesticated carnivorous mammal that typically has a long snout, an acute sense of smell, and a barking, howling, or whining voice.", audioUrlUS: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/dog--_us_1.mp3", audioUrlUK: "https://ssl.gstatic.com/dictionary/static/sounds/20200429/dog--_gb_1.mp3" }
+            ]
+        };
+
+        let currentTopic = null; // Biến để lưu trữ chủ đề hiện tại được chọn
+
+        // Khởi tạo đối tượng Web Speech API để phát âm
+        const synth = window.speechSynthesis;
+        const utterance = new SpeechSynthesisUtterance();
+        utterance.lang = 'en-US'; // Đặt ngôn ngữ tiếng Anh Mỹ mặc định cho TTS nếu không có audio URL
+
+        // Biến toàn cục cho luyện tập
+        let currentPracticeIndex = 0;
+        let shuffledVocabulary = []; // Danh sách từ vựng đã xáo trộn cho luyện tập
+        let currentPracticeVocab = null; // Biến để lưu trữ từ hiện tại đang luyện tập
+        const NUM_OPTIONS = 4; // Số lượng đáp án trắc nghiệm
+
+        // Global variable to store selected topics for practice
+        let selectedPracticeTopics = [];
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lấy các phần tử DOM cần thiết
+            const vocabularySection = document.getElementById('vocabularySection');
+            const practiceSection = document.getElementById('practiceSection');
+            const vocabLink = document.getElementById('vocabLink');
+            const practiceLink = document.getElementById('practiceLink');
+            const vocabularyListContainer = document.getElementById('vocabularyList');
+            const searchInput = document.querySelector('.search-input');
+            const addVocabStatus = document.getElementById('add-vocab-status'); // Thông báo chung
+            const actionArea = document.getElementById('actionArea');
+            const noTopicSelectedMessage = document.getElementById('noTopicSelectedMessage');
+
+            // Các input và nút cho chức năng thêm NHIỀU từ
+            const multipleVocabInput = document.getElementById('multipleVocabInput');
+            const addMultipleVocabButton = document.getElementById('addMultipleVocabButton');
+            const currentTopicDisplayName = document.getElementById('currentTopicDisplay');
+
+            // Các phần tử cho tính năng luyện tập
+            const practiceCard = document.getElementById('practiceCard');
+            const currentWordDisplay = document.getElementById('currentWord');
+            const currentPronunciationDisplay = document.getElementById('currentPronunciation');
+            const englishDescriptionDisplay = document.getElementById('englishDescription');
+            const meaningOptionsContainer = document.getElementById('meaningOptions'); // Container cho các nút đáp án
+            const correctFeedback = document.getElementById('correctFeedback');
+            const incorrectFeedback = document.getElementById('incorrectFeedback');
+            const startPracticeButton = document.getElementById('startPracticeButton');
+            const endPracticeButton = document.getElementById('endPracticeButton'); // NEW
+            const practiceEmptyMessage = document.getElementById('practiceEmptyMessage');
+
+            // Nút audio và repeat cho thẻ luyện tập
+            const playUsAudioPracticeButton = document.getElementById('playUsAudioPractice');
+            const playUkAudioPracticeButton = document.getElementById('playUkAudioPractice');
+            const repeatAudioPracticeButton = document.getElementById('repeatAudioPractice');
+
+
+            // Các phần tử cho quản lý chủ đề
+            const newTopicNameInput = document.getElementById('newTopicName');
+            const addTopicButton = document.getElementById('addTopicButton');
+            const topicListContainer = document.getElementById('topicList');
+            const topicStatus = document.getElementById('topic-status');
+
+            // New DOM elements for practice topics
+            const practiceTopicListContainer = document.getElementById('practiceTopicList');
+            const noPracticeTopicSelectedMessage = document.getElementById('noPracticeTopicSelectedMessage');
+
+
+            // --- Chức năng chuyển đổi giữa các tab "Từ vựng" và "Luyện tập" ---
+            vocabLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                vocabularySection.style.display = 'block';
+                practiceSection.style.display = 'none';
+                vocabLink.classList.add('active');
+                practiceLink.classList.remove('active');
+                renderTopics(); // Render lại danh sách chủ đề
+                renderVocabulary(currentTopic); // Hiển thị từ vựng của chủ đề hiện tại
+                updateTopicVisibility(); // Cập nhật hiển thị của các phần liên quan đến chủ đề
+            });
+
+            practiceLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                vocabularySection.style.display = 'none';
+                practiceSection.style.display = 'block';
+                vocabLink.classList.remove('active');
+                practiceLink.classList.add('active');
+                renderPracticeTopics(); // Render practice topic buttons
+                resetPractice(); // Reset và bắt đầu phiên luyện tập mới khi chuyển tab
+                endPracticeButton.style.display = 'none'; // NEW: Ensure end practice button is hidden when entering practice section initially
+            });
+
+
+            /**
+             * Render (hiển thị) danh sách từ vựng lên giao diện cho chủ đề hiện tại.
+             * @param {string | null} topicName - Tên chủ đề cần hiển thị từ vựng. Nếu null hoặc undefined, sẽ xóa danh sách.
+             * @param {string} [searchTerm=''] - Từ khóa tìm kiếm (tùy chọn).
+             */
+            function renderVocabulary(topicName, searchTerm = '') {
+                vocabularyListContainer.innerHTML = ''; // Xóa tất cả từ vựng hiện có trước khi vẽ lại
+
+                let vocabsToRender = [];
+                if (topicName && vocabularyData[topicName]) {
+                    vocabsToRender = vocabularyData[topicName];
+                }
+
+                if (searchTerm) {
+                    searchTerm = searchTerm.toLowerCase();
+                    vocabsToRender = vocabsToRender.filter(vocab =>
+                        vocab.word.toLowerCase().includes(searchTerm) ||
+                        vocab.meaning.toLowerCase().includes(searchTerm)
+                    );
+                }
+
+                if (vocabsToRender.length === 0) {
+                    vocabularyListContainer.innerHTML = '<p style="text-align: center; color: #777;">Chưa có từ vựng nào trong chủ đề này. Hãy thêm từ!</p>';
+                    return;
+                }
+
+                vocabsToRender.forEach((vocab, index) => {
+                    const vocabCard = document.createElement('div');
+                    vocabCard.classList.add('vocab-card');
+                    vocabCard.innerHTML = `
+                        <div class="audio-buttons">
+                            <button class="play-us-audio" data-word="${vocab.word}" data-us-audio="${vocab.audioUrlUS || ''}" data-uk-audio="${vocab.audioUrlUK || ''}" title="Phát âm tiếng Anh Mỹ"><i class="fas fa-volume-up"></i> US</button>
+                            <button class="play-uk-audio" data-word="${vocab.word}" data-us-audio="${vocab.audioUrlUS || ''}" data-uk-audio="${vocab.audioUrlUK || ''}" title="Phát âm tiếng Anh Anh"><i class="fas fa-volume-up"></i> UK</button>
+                        </div>
+                        <h3>${vocab.word}</h3>
+                        <p class="pronunciation">${vocab.pronunciation}</p>
+                        <p class="definition"><strong>Nghĩa:</strong> ${vocab.meaning}</p>
+                        ${vocab.englishDefinition ? `<p class="definition"><strong>Mô tả tiếng Anh:</strong> ${vocab.englishDefinition}</p>` : ''}
+                        <button class="main-button delete-vocab-btn" data-topic="${topicName}" data-index="${index}" style="background-color: #f44336; margin-top: 10px;">Xóa</button>
+                    `;
+                    vocabularyListContainer.appendChild(vocabCard);
+                });
+
+                // Attach event listeners for audio buttons
+                document.querySelectorAll('.play-us-audio').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const word = this.dataset.word;
+                        const usAudio = this.dataset.usAudio;
+                        const ukAudio = this.dataset.ukAudio;
+                        playAudio(word, usAudio || ukAudio, 'en-US'); // Ưu tiên US, nếu không có thì dùng UK
+                    });
+                });
+
+                document.querySelectorAll('.play-uk-audio').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const word = this.dataset.word;
+                        const usAudio = this.dataset.usAudio;
+                        const ukAudio = this.dataset.ukAudio;
+                        playAudio(word, ukAudio || usAudio, 'en-GB'); // Ưu tiên UK, nếu không có thì dùng US
+                    });
+                });
+
+
+                // Attach event listeners for delete buttons
+                document.querySelectorAll('.delete-vocab-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const topic = this.dataset.topic;
+                        const indexToDelete = parseInt(this.dataset.index);
+                        if (confirm(`Bạn có chắc chắn muốn xóa từ "${vocabularyData[topic][indexToDelete].word}" khỏi chủ đề "${topic}" không?`)) {
+                            vocabularyData[topic].splice(indexToDelete, 1);
+                            saveVocabularyData();
+                            renderVocabulary(topic); // Render lại danh sách sau khi xóa
+                            showStatus('success', 'Đã xóa từ vựng thành công!');
+                        }
+                    });
+                });
+            }
+
+            // --- Chức năng tìm kiếm từ vựng ---
+            searchInput.addEventListener('input', function() {
+                renderVocabulary(currentTopic, this.value.trim());
+            });
+
+            // --- Chức năng thêm nhiều từ vựng ---
+            addMultipleVocabButton.addEventListener('click', function() {
+                if (!currentTopic) {
+                    showStatus('error', 'Vui lòng chọn hoặc tạo một chủ đề trước khi thêm từ vựng.');
+                    return;
+                }
+
+                const input = multipleVocabInput.value.trim();
+                if (!input) {
+                    showStatus('error', 'Vui lòng nhập từ vựng.');
+                    return;
+                }
+
+                const lines = input.split('\n').filter(line => line.trim() !== '');
+                let addedCount = 0;
+                let failedCount = 0;
+
+                lines.forEach(line => {
+                    const parsed = parseVocabLine(line);
+                    if (parsed) {
+                        vocabularyData[currentTopic].push(parsed);
+                        addedCount++;
+                    } else {
+                        console.warn(`Bỏ qua dòng không đúng định dạng: ${line}`);
+                        failedCount++;
+                    }
+                });
+
+                saveVocabularyData();
+                renderVocabulary(currentTopic);
+                multipleVocabInput.value = ''; // Xóa nội dung input
+                showStatus('success', `Đã thêm thành công ${addedCount} từ. (${failedCount} dòng không hợp lệ đã bỏ qua).`);
+            });
+
+            /**
+             * Phân tích cú pháp một dòng văn bản thành đối tượng từ vựng.
+             * Hỗ trợ 2 định dạng: "Word: Meaning (Pronunciation) [English Description]" hoặc "Word, Meaning, Pronunciation, English Description"
+             * @param {string} line - Dòng văn bản chứa thông tin từ vựng.
+             * @returns {object | null} Đối tượng từ vựng hoặc null nếu không khớp định dạng.
+             */
+            function parseVocabLine(line) {
+                line = line.trim();
+
+                // Định dạng 1: "Word: Meaning (Pronunciation) [English Description]"
+                const colonRegex = /^([^:]+):\s*([^(\[]+)(?:\s*\(([^)]+)\))?(?:\s*\[([^\]]+)\])?$/;
+                let match = line.match(colonRegex);
+                if (match) {
+                    return {
+                        word: match[1].trim(),
+                        meaning: match[2].trim(),
+                        pronunciation: match[3] ? match[3].trim() : '',
+                        englishDefinition: match[4] ? match[4].trim() : '',
+                        audioUrlUS: '', // Sẽ được tìm kiếm sau nếu cần
+                        audioUrlUK: ''
+                    };
+                }
+
+                // Định dạng 2: "Word, Meaning, Pronunciation, English Description"
+                const commaRegex = /^([^,]+),\s*([^,]+)(?:,\s*([^,]*))?(?:,\s*(.*))?$/;
+                match = line.match(commaRegex);
+                if (match) {
+                    return {
+                        word: match[1].trim(),
+                        meaning: match[2].trim(),
+                        pronunciation: match[3] ? match[3].trim() : '',
+                        englishDefinition: match[4] ? match[4].trim() : '',
+                        audioUrlUS: '',
+                        audioUrlUK: ''
+                    };
+                }
+
+                return null; // Không khớp định dạng nào
+            }
+
+
+            // --- Chức năng phát âm từ vựng ---
+            function playAudio(word, audioUrl, lang) {
+                if (audioUrl) {
+                    const audio = new Audio(audioUrl);
+                    audio.play().catch(e => {
+                        console.error('Lỗi khi phát âm từ URL, thử dùng TTS:', e);
+                        speakWithTTS(word, lang); // Fallback to TTS
+                    });
+                } else {
+                    speakWithTTS(word, lang);
+                }
+            }
+
+            function speakWithTTS(text, lang) {
+                // Hủy bỏ bất kỳ giọng nói đang phát nào
+                if (synth.speaking) {
+                    synth.cancel();
+                }
+                utterance.text = text;
+                utterance.lang = lang || 'en-US'; // Use provided lang or default to en-US
+
+                // Đặt tốc độ và cao độ (tùy chỉnh)
+                utterance.rate = 1; // 0.1 to 10
+                utterance.pitch = 1; // 0 to 2
+
+                // Tùy chọn, bạn có thể chọn giọng cụ thể nếu muốn
+                // const voices = synth.getVoices();
+                // utterance.voice = voices.find(voice => voice.lang === utterance.lang); // Cố gắng tìm giọng phù hợp
+
+                synth.speak(utterance);
+            }
+
+
+            // --- Quản lý trạng thái và lưu trữ dữ liệu ---
+            function saveVocabularyData() {
+                localStorage.setItem('vocabularyData', JSON.stringify(vocabularyData));
+            }
+
+            function loadVocabularyData() {
+                const storedData = localStorage.getItem('vocabularyData');
+                if (storedData) {
+                    vocabularyData = JSON.parse(storedData);
+                    // Đảm bảo cấu trúc dữ liệu cũ tương thích với chủ đề nếu cần
+                    // Ví dụ: Nếu dữ liệu cũ không có chủ đề, chuyển nó vào chủ đề "Mặc định"
+                    if (!vocabularyData["Cơ bản"] && Array.isArray(vocabularyData)) {
+                        vocabularyData = { "Cơ bản": storedData }; // Chuyển đổi dữ liệu cũ sang định dạng mới
+                    }
+                }
+                // Nếu không có dữ liệu, vocabularyData vẫn giữ giá trị mẫu ban đầu
+            }
+
+            function showStatus(type, message, element = addVocabStatus) {
+                element.textContent = message;
+                element.style.display = 'block';
+                element.style.color = type === 'success' ? 'green' : 'red';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000); // Ẩn sau 3 giây
+            }
+
+
+            // --- Chức năng quản lý chủ đề ---
+            addTopicButton.addEventListener('click', function() {
+                const newTopicName = newTopicNameInput.value.trim();
+                if (newTopicName) {
+                    if (vocabularyData[newTopicName]) {
+                        showStatus('error', 'Chủ đề này đã tồn tại!', topicStatus);
+                    } else {
+                        vocabularyData[newTopicName] = [];
+                        saveVocabularyData();
+                        newTopicNameInput.value = '';
+                        renderTopics();
+                        showStatus('success', `Đã thêm chủ đề "${newTopicName}" thành công.`, topicStatus);
+                        selectTopic(newTopicName); // Tự động chọn chủ đề vừa tạo
+                    }
+                } else {
+                    showStatus('error', 'Vui lòng nhập tên chủ đề.', topicStatus);
+                }
+            });
+
+            function renderTopics() {
+                topicListContainer.innerHTML = ''; // Clear existing buttons
+                practiceTopicListContainer.innerHTML = ''; // Clear practice topic buttons as well
+
+                const topics = Object.keys(vocabularyData);
+
+                if (topics.length === 0) {
+                    noTopicSelectedMessage.style.display = 'block';
+                    actionArea.classList.add('hidden');
+                    vocabularyListContainer.classList.add('hidden');
+                    if (currentTopic) { // Nếu chủ đề hiện tại bị xóa
+                        currentTopic = null;
+                        currentTopicDisplayName.textContent = '';
+                    }
+                    return;
+                } else {
+                    noTopicSelectedMessage.style.display = 'none';
+                    actionArea.classList.remove('hidden');
+                    vocabularyListContainer.classList.remove('hidden');
+                }
+
+                topics.forEach(topic => {
+                    // For vocabulary management section
+                    const button = document.createElement('button');
+                    button.classList.add('topic-button');
+                    button.textContent = topic;
+                    if (topic === currentTopic) {
+                        button.classList.add('active');
+                    }
+                    button.addEventListener('click', () => selectTopic(topic));
+
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.classList.add('delete-topic-btn');
+                    deleteBtn.innerHTML = '<i class="fas fa-times-circle"></i>';
+                    deleteBtn.title = `Xóa chủ đề "${topic}"`;
+                    deleteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Ngăn sự kiện click lan truyền lên nút chủ đề
+                        if (confirm(`Bạn có chắc chắn muốn xóa chủ đề "${topic}" và tất cả từ vựng trong đó không?`)) {
+                            deleteTopic(topic);
+                        }
+                    });
+                    button.appendChild(deleteBtn);
+                    topicListContainer.appendChild(button);
+                });
+
+                // Cập nhật tên chủ đề hiện tại hiển thị
+                currentTopicDisplayName.textContent = currentTopic || 'Chưa chọn';
+
+                // Render practice topic buttons separately
+                renderPracticeTopics();
+            }
+
+
+            function renderPracticeTopics() {
+                practiceTopicListContainer.innerHTML = ''; // Clear existing buttons
+                const topics = Object.keys(vocabularyData);
+
+                if (topics.length === 0) {
+                    noPracticeTopicSelectedMessage.style.display = 'block';
+                    return;
+                } else {
+                    noPracticeTopicSelectedMessage.style.display = 'none';
+                }
+
+                topics.forEach(topic => {
+                    const button = document.createElement('button');
+                    button.classList.add('topic-button');
+                    button.textContent = topic;
+                    if (selectedPracticeTopics.includes(topic)) {
+                        button.classList.add('active');
+                    }
+                    button.addEventListener('click', () => togglePracticeTopic(topic));
+                    practiceTopicListContainer.appendChild(button);
+                });
+            }
+
+            function togglePracticeTopic(topic) {
+                const index = selectedPracticeTopics.indexOf(topic);
+                if (index > -1) {
+                    selectedPracticeTopics.splice(index, 1); // Remove if already selected
+                } else {
+                    selectedPracticeTopics.push(topic); // Add if not selected
+                }
+                renderPracticeTopics(); // Re-render to update active state
+            }
+
+
+            function selectTopic(topicName) {
+                currentTopic = topicName;
+                renderTopics(); // Re-render to update active class
+                renderVocabulary(currentTopic); // Display vocabulary for selected topic
+                updateTopicVisibility();
+            }
+
+            function deleteTopic(topicName) {
+                if (vocabularyData[topicName]) {
+                    delete vocabularyData[topicName];
+                    saveVocabularyData();
+                    if (currentTopic === topicName) {
+                        currentTopic = null; // Bỏ chọn chủ đề nếu nó bị xóa
+                    }
+                    renderTopics(); // Render lại danh sách chủ đề
+                    renderVocabulary(currentTopic); // Cập nhật hiển thị từ vựng
+                    updateTopicVisibility();
+                    showStatus('success', `Đã xóa chủ đề "${topicName}" thành công.`, topicStatus);
+                }
+            }
+
+            function updateTopicVisibility() {
+                if (currentTopic) {
+                    actionArea.classList.remove('hidden');
+                    vocabularyListContainer.classList.remove('hidden');
+                    noTopicSelectedMessage.style.display = 'none';
+                } else {
+                    actionArea.classList.add('hidden');
+                    vocabularyListContainer.classList.add('hidden');
+                    noTopicSelectedMessage.style.display = 'block';
+                    vocabularyListContainer.innerHTML = ''; // Clear content
+                }
+            }
+
+            // --- Chức năng luyện tập (Flashcard) ---
+            startPracticeButton.addEventListener('click', startPractice);
+            endPracticeButton.addEventListener('click', endPractice); // NEW
+
+            function startPractice() {
+                if (selectedPracticeTopics.length === 0) {
+                    showStatus('error', 'Vui lòng chọn ít nhất một chủ đề để luyện tập.', noPracticeTopicSelectedMessage);
+                    noPracticeTopicSelectedMessage.style.display = 'block'; // Make sure message is visible
+                    return;
+                } else {
+                     noPracticeTopicSelectedMessage.style.display = 'none';
+                }
+
+                // Tập hợp tất cả từ vựng từ các chủ đề đã chọn
+                let allVocabForPractice = [];
+                selectedPracticeTopics.forEach(topic => {
+                    if (vocabularyData[topic]) {
+                        allVocabForPractice = allVocabForPractice.concat(vocabularyData[topic]);
+                    }
+                });
+
+                if (allVocabForPractice.length === 0) {
+                    practiceEmptyMessage.style.display = 'block';
+                    resetPracticeCard();
+                    return;
+                } else {
+                    practiceEmptyMessage.style.display = 'none';
+                }
+
+                // Xáo trộn danh sách từ vựng và bắt đầu luyện tập
+                shuffledVocabulary = shuffleArray(allVocabForPractice);
+                currentPracticeIndex = 0;
+                startPracticeButton.style.display = 'none';
+                endPracticeButton.style.display = 'inline-block'; // Show end button
+                nextWord();
+            }
+
+            function endPractice() {
+                resetPractice();
+                startPracticeButton.style.display = 'inline-block'; // Show start button
+                endPracticeButton.style.display = 'none'; // Hide end button
+                practiceEmptyMessage.style.display = 'none'; // Hide if was showing
+                noPracticeTopicSelectedMessage.style.display = 'none'; // Hide if was showing
+            }
+
+            function resetPractice() {
+                shuffledVocabulary = [];
+                currentPracticeIndex = 0;
+                currentPracticeVocab = null;
+                resetPracticeCard();
+            }
+
+
+            function nextWord() {
+                resetPracticeCard(); // Reset UI state for the next word
+
+                if (currentPracticeIndex < shuffledVocabulary.length) {
+                    currentPracticeVocab = shuffledVocabulary[currentPracticeIndex];
+                    currentWordDisplay.textContent = currentPracticeVocab.word;
+                    currentPronunciationDisplay.textContent = currentPracticeVocab.pronunciation;
+                    englishDescriptionDisplay.textContent = currentPracticeVocab.englishDefinition;
+
+                    // Phát âm từ ngay khi hiển thị
+                    playAudio(currentPracticeVocab.word, currentPracticeVocab.audioUrlUS || currentPracticeVocab.audioUrlUK, currentPracticeVocab.audioUrlUS ? 'en-US' : (currentPracticeVocab.audioUrlUK ? 'en-GB' : 'en-US'));
+
+
+                    // Tạo các lựa chọn nghĩa
+                    const options = generateMeaningOptions(currentPracticeVocab.meaning, shuffledVocabulary, currentPracticeVocab.word);
+                    meaningOptionsContainer.innerHTML = ''; // Clear previous options
+                    options.forEach(option => {
+                        const button = document.createElement('button');
+                        button.classList.add('meaning-option-button');
+                        button.textContent = option;
+                        button.addEventListener('click', () => checkAnswer(option, currentPracticeVocab.meaning, button));
+                        meaningOptionsContainer.appendChild(button);
+                    });
+
+                } else {
+                    currentWordDisplay.textContent = 'Hoàn thành luyện tập!';
+                    currentPronunciationDisplay.textContent = '';
+                    englishDescriptionDisplay.textContent = 'Bạn đã luyện tập hết tất cả từ vựng trong chủ đề đã chọn.';
+                    meaningOptionsContainer.innerHTML = '';
+                    startPracticeButton.style.display = 'inline-block'; // Hiển thị lại nút Bắt đầu luyện tập
+                    endPracticeButton.style.display = 'none'; // Ẩn nút Kết thúc
+                }
+            }
+
+            function generateMeaningOptions(correctMeaning, allVocabs, currentWord) {
+                let options = [correctMeaning]; // Bắt đầu với đáp án đúng
+                let incorrectMeanings = allVocabs
+                    .filter(vocab => vocab.meaning !== correctMeaning && vocab.word !== currentWord)
+                    .map(vocab => vocab.meaning);
+
+                incorrectMeanings = shuffleArray(Array.from(new Set(incorrectMeanings))); // Xáo trộn và loại bỏ trùng lặp
+
+                // Thêm các đáp án sai từ danh sách các nghĩa khác
+                for (let i = 0; options.length < NUM_OPTIONS && i < incorrectMeanings.length; i++) {
+                    options.push(incorrectMeanings[i]);
+                }
+
+                // Nếu không đủ đáp án sai, thêm các chuỗi chung
+                const genericMeanings = ["Học tiếng Anh", "Từ vựng khó", "Cụm từ hay", "Kiến thức chung", "Từ đồng nghĩa"];
+                for (let i = 0; options.length < NUM_OPTIONS && i < genericMeanings.length; i++) {
+                    if (!options.includes(genericMeanings[i])) { // Đảm bảo không trùng với các lựa chọn đã có
+                        options.push(genericMeanings[i]);
+                    }
+                }
+
+                return shuffleArray(options); // Xáo trộn lại để đáp án đúng không luôn ở một vị trí
+            }
+
+            function checkAnswer(selectedOption, correctMeaning, clickedButton) {
+                const allButtons = meaningOptionsContainer.querySelectorAll('.meaning-option-button');
+                allButtons.forEach(button => button.disabled = true); // Vô hiệu hóa tất cả các nút sau khi chọn
+
+                if (selectedOption === correctMeaning) {
+                    clickedButton.classList.add('correct');
+                    practiceCard.classList.add('is-correct');
+                    setTimeout(() => {
+                        currentPracticeIndex++;
+                        nextWord();
+                    }, 1000); // Chuyển sang từ tiếp theo sau 1 giây
+                } else {
+                    clickedButton.classList.add('incorrect');
+                    practiceCard.classList.add('is-incorrect');
+                    // Tìm và làm nổi bật đáp án đúng
+                    allButtons.forEach(button => {
+                        if (button.textContent === correctMeaning) {
+                            button.classList.add('correct');
+                        }
+                    });
+                    setTimeout(() => {
+                         // Cho phép người dùng thử lại hoặc bỏ qua
+                        currentPracticeIndex++; // Tăng index để chuyển sang từ tiếp theo sau khi người dùng xem đáp án
+                        nextWord();
+                    }, 2000); // Hiển thị đáp án đúng trong 2 giây rồi chuyển
+                }
+            }
+
+
+            function resetPracticeCard() {
+                currentWordDisplay.textContent = '';
+                currentPronunciationDisplay.textContent = '';
+                englishDescriptionDisplay.textContent = '';
+                meaningOptionsContainer.innerHTML = '';
+                practiceCard.classList.remove('is-correct', 'is-incorrect');
+            }
+
+
+            // Hàm xáo trộn mảng (Fisher-Yates shuffle)
+            function shuffleArray(array) {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            }
+
+            // Listeners for practice card audio buttons
+            playUsAudioPracticeButton.addEventListener('click', function() {
+                if (currentPracticeVocab) {
+                    playAudio(currentPracticeVocab.word, currentPracticeVocab.audioUrlUS || currentPracticeVocab.audioUrlUK, 'en-US'); // Ưu tiên giọng US nếu có, hoặc UK
+                }
+            });
+
+            playUkAudioPracticeButton.addEventListener('click', function() {
+                if (currentPracticeVocab) {
+                    playAudio(currentPracticeVocab.word, currentPracticeVocab.audioUrlUK || currentPracticeVocab.audioUrlUS, 'en-GB'); // Ưu tiên giọng UK nếu có, hoặc US
+                }
+            });
+
+            repeatAudioPracticeButton.addEventListener('click', function() {
+                if (currentPracticeVocab) {
+                    // Phát âm lại từ hiện tại, ưu tiên giọng US nếu có, hoặc UK, hoặc TTS
+                    playAudio(currentPracticeVocab.word, currentPracticeVocab.audioUrlUS || currentPracticeVocab.audioUrlUK, currentPracticeVocab.audioUrlUS ? 'en-US' : (currentPracticeVocab.audioUrlUK ? 'en-GB' : 'en-US'));
+                }
+            });
+
+            // --- Logic khi trang được tải lần đầu ---
+            loadVocabularyData(); // Tải dữ liệu từ Local Storage
+
+            // Kích hoạt mục menu "Từ vựng" (đánh dấu active)
+            const navLinks = document.querySelectorAll('.sidebar nav a');
+            if (navLinks.length > 0) {
+                navLinks.forEach(link => link.classList.remove('active'));
+                const targetLink = Array.from(navLinks).find(link => link.id === 'vocabLink');
+                if (targetLink) {
+                    targetLink.classList.add('active');
+                }
+            }
+
+            // Render các chủ đề và từ vựng ban đầu
+            renderTopics();
+            // Chọn chủ đề "Cơ bản" nếu nó tồn tại, hoặc chủ đề đầu tiên nếu không, hoặc không chọn gì
+            const initialTopic = Object.keys(vocabularyData)[0] || null;
+            if (initialTopic) {
+                selectTopic(initialTopic);
+            } else {
+                updateTopicVisibility(); // Ẩn các phần nếu chưa có chủ đề nào
+            }
+        });
+    </script>
+</body>
+</html>
