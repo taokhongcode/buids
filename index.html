@@ -47,12 +47,18 @@
     <style>
         /* --- Biến CSS cho màu sắc và kích thước --- */
         :root {
-            --primary-color: #1e90ff; /* Màu xanh dương chủ đạo */
-            --secondary-color: #f0f2f5; /* Màu nền phụ */
-            --text-color: #333; /* Màu chữ chính */
-            --light-gray: #f8f8f8; /* Màu nền nhẹ */
-            --border-color: #ddd; /* Màu đường viền */
+            --primary-color: rgb(30, 144, 255); /* Màu xanh dương chủ đạo - Dodger Blue */
+            --secondary-color: rgb(240, 242, 245); /* Màu nền phụ - Light Grayish Blue */
+            --text-color: rgb(51, 51, 51); /* Màu chữ chính - Dark Gray */
+            --light-gray: rgb(248, 248, 248); /* Màu nền nhẹ - Very Light Gray */
+            --border-color: rgb(221, 221, 221); /* Màu đường viền - Light Gray */
             --sidebar-width: 250px; /* Chiều rộng sidebar */
+            --success-color: rgb(76, 175, 80); /* Green for correct answers */
+            --error-color: rgb(244, 67, 54); /* Red for incorrect answers */
+            --hover-darken-color: rgb(21, 101, 192); /* Darker blue for hover */
+            --shadow-light: rgba(0, 0, 0, 0.05); /* Light shadow */
+            --shadow-medium: rgba(0, 0, 0, 0.08); /* Medium shadow */
+            --shadow-strong: rgba(0, 0, 0, 0.1); /* Strong shadow */
         }
 
         /* --- CSS chung cho body --- */
@@ -70,11 +76,11 @@
             width: var(--sidebar-width);
             min-width: var(--sidebar-width);
             height: 100vh; /* Chiếm toàn bộ chiều cao màn hình */
-            background: #fff;
+            background: rgb(255, 255, 255); /* White */
             position: sticky; /* Giữ sidebar cố định khi cuộn */
             top: 0;
             padding: 20px 0;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05); /* Đổ bóng nhẹ */
+            box-shadow: 2px 0 5px var(--shadow-light); /* Đổ bóng nhẹ */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -103,24 +109,24 @@
         .sidebar nav a i {
             margin-right: 15px;
             font-size: 18px;
-            color: #666;
+            color: rgb(102, 102, 102); /* Gray */
         }
 
         .sidebar nav a:hover {
             background: var(--primary-color);
-            color: white;
+            color: rgb(255, 255, 255); /* White */
         }
         .sidebar nav a:hover i {
-            color: white;
+            color: rgb(255, 255, 255); /* White */
         }
 
         .sidebar nav a.active {
             background: var(--primary-color);
-            color: white;
+            color: rgb(255, 255, 255); /* White */
             font-weight: bold;
         }
         .sidebar nav a.active i {
-            color: white;
+            color: rgb(255, 255, 255); /* White */
         }
 
         /* --- CSS cho Main Content (Nội dung chính) --- */
@@ -136,10 +142,10 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 0;
-            background: #fff;
+            background: rgb(255, 255, 255); /* White */
             border-bottom: 1px solid var(--border-color);
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px var(--shadow-light);
             margin-bottom: 25px;
             padding-left: 20px;
             padding-right: 20px;
@@ -167,11 +173,11 @@
 
         /* --- CSS cho Thông báo --- */
         .info-message {
-            color: #555;
+            color: rgb(85, 85, 85); /* Darker Gray */
             text-align: center;
             margin-top: 30px;
-            background: #e9f5ff;
-            border: 1px solid #cce7ff;
+            background: rgb(233, 245, 255); /* Light Blue */
+            border: 1px solid rgb(204, 231, 255); /* Lighter Blue */
             padding: 20px;
             border-radius: 8px;
             line-height: 1.6;
@@ -191,10 +197,10 @@
 
         /* --- CSS cho phần thêm nhiều từ vựng thủ công --- */
         .add-multiple-vocab-section {
-            background: #fff;
+            background: rgb(255, 255, 255); /* White */
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px var(--shadow-light);
             width: fit-content;
             max-width: 90%;
             margin-left: auto; /* Căn giữa */
@@ -215,7 +221,7 @@
             gap: 8px;
             padding: 12px 25px;
             background: var(--primary-color);
-            color: white;
+            color: rgb(255, 255, 255); /* White */
             text-decoration: none;
             border-radius: 8px;
             cursor: pointer;
@@ -225,7 +231,7 @@
             border: none;
         }
         .main-button:hover {
-            background: #1565c0;
+            background: var(--hover-darken-color);
             transform: translateY(-2px);
         }
         .main-button i {
@@ -244,7 +250,7 @@
 
         .add-multiple-vocab-section .format-hint {
             font-size: 14px;
-            color: #777;
+            color: rgb(119, 119, 119); /* Gray */
             margin-bottom: 15px;
             line-height: 1.5;
             text-align: left; /* Căn trái hint */
@@ -276,10 +282,10 @@
         }
 
         .vocab-card {
-            background: #fff;
+            background: rgb(255, 255, 255); /* White */
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Đổ bóng nổi bật hơn */
+            box-shadow: 0 4px 10px var(--shadow-medium); /* Đổ bóng nổi bật hơn */
             transition: transform 0.2s ease;
             position: relative; /* Dùng cho nút phát âm */
             overflow: hidden; /* Để bo góc */
@@ -298,7 +304,7 @@
 
         .vocab-card .pronunciation {
             font-style: italic;
-            color: #666;
+            color: rgb(102, 102, 102); /* Gray */
             font-size: 15px;
             margin-bottom: 10px;
         }
@@ -328,7 +334,7 @@
             padding: 5px;
         }
         .vocab-card .audio-buttons button:hover {
-            color: #1565c0;
+            color: var(--hover-darken-color);
             transform: translateY(-1px);
         }
         .vocab-card .audio-buttons button:active {
@@ -346,10 +352,10 @@
         }
 
         .practice-card {
-            background: #fff;
+            background: rgb(255, 255, 255); /* White */
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 6px 15px var(--shadow-strong);
             width: 90%;
             max-width: 500px;
             text-align: center;
@@ -371,14 +377,14 @@
         }
         .practice-card p {
             font-size: 20px;
-            color: #555;
+            color: rgb(85, 85, 85); /* Darker Gray */
             min-height: 30px; /* Đảm bảo chiều cao không đổi */
         }
         .practice-card .english-description {
             font-size: 18px;
-            color: #777;
+            color: rgb(119, 119, 119); /* Gray */
             margin-top: 15px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid rgb(238, 238, 238); /* Light Gray */
             padding-top: 15px;
         }
         .practice-card .meaning-options {
@@ -394,27 +400,27 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             cursor: pointer;
-            background-color: #f8f8f8;
+            background-color: var(--light-gray);
             color: var(--text-color);
             transition: background 0.2s ease, border-color 0.2s ease, transform 0.1s ease;
         }
 
         .practice-card .meaning-option-button:hover {
-            background-color: #e0e0e0;
-            border-color: #c0c0c0;
+            background-color: rgb(224, 224, 224); /* Darker Gray */
+            border-color: rgb(192, 192, 192); /* Even Darker Gray */
         }
 
         .practice-card .meaning-option-button.correct {
-            background-color: #4CAF50; /* Green */
-            color: white;
-            border-color: #4CAF50;
+            background-color: var(--success-color); /* Green */
+            color: rgb(255, 255, 255); /* White */
+            border-color: var(--success-color);
             font-weight: bold;
         }
 
         .practice-card .meaning-option-button.incorrect {
-            background-color: #f44336; /* Red */
-            color: white;
-            border-color: #f44336;
+            background-color: var(--error-color); /* Red */
+            color: rgb(255, 255, 255); /* White */
+            border-color: var(--error-color);
             font-weight: bold;
         }
 
@@ -426,24 +432,24 @@
         }
 
         .practice-card .correct-feedback {
-            color: green;
+            color: var(--success-color);
             font-weight: bold;
             margin-top: 10px;
             display: none;
         }
         .practice-card .incorrect-feedback {
-            color: red;
+            color: var(--error-color);
             font-weight: bold;
             margin-top: 10px;
             display: none;
         }
         .practice-card.is-correct {
-            border: 2px solid green;
-            box-shadow: 0 6px 15px rgba(0, 128, 0, 0.2);
+            border: 2px solid var(--success-color);
+            box-shadow: 0 6px 15px rgba(0, 128, 0, 0.2); /* Green shadow */
         }
         .practice-card.is-incorrect {
-            border: 2px solid red;
-            box-shadow: 0 6px 15px rgba(255, 0, 0, 0.2);
+            border: 2px solid var(--error-color);
+            box-shadow: 0 6px 15px rgba(255, 0, 0, 0.2); /* Red shadow */
         }
 
         /* New styles for audio and repeat buttons in practice card */
@@ -468,7 +474,7 @@
             gap: 3px;
         }
         .practice-card .card-audio-controls button:hover {
-            color: #1565c0;
+            color: var(--hover-darken-color);
             transform: translateY(-1px);
         }
         .practice-card .card-audio-controls button:active {
@@ -477,10 +483,10 @@
 
         /* --- New CSS for Topic Management --- */
         .topic-management {
-            background: #fff;
+            background: rgb(255, 255, 255); /* White */
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px var(--shadow-light);
             margin-bottom: 25px;
         }
 
@@ -513,13 +519,13 @@
             border-radius: 25px;
             border: none;
             background-color: var(--primary-color);
-            color: white;
+            color: rgb(255, 255, 255); /* White */
             cursor: pointer;
             font-size: 16px;
             transition: background-color 0.3s ease;
         }
         .topic-input-group button:hover {
-            background-color: #1565c0;
+            background-color: var(--hover-darken-color);
         }
 
         .topic-list {
@@ -536,7 +542,7 @@
             padding: 10px 15px;
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            background-color: #f0f0f0;
+            background-color: rgb(240, 240, 240); /* Light Gray */
             cursor: pointer;
             font-size: 15px;
             transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -544,20 +550,20 @@
 
         .topic-button.active {
             background-color: var(--primary-color);
-            color: white;
+            color: rgb(255, 255, 255); /* White */
             border-color: var(--primary-color);
             font-weight: bold;
         }
 
         .topic-button:hover:not(.active) {
-            background-color: #e0e0e0;
-            border-color: #c0c0c0;
+            background-color: rgb(224, 224, 224); /* Darker Gray */
+            border-color: rgb(192, 192, 192); /* Even Darker Gray */
         }
 
         .topic-button .delete-topic-btn {
             background: none;
             border: none;
-            color: #888;
+            color: rgb(136, 136, 136); /* Gray */
             font-size: 16px;
             margin-left: 8px;
             cursor: pointer;
@@ -566,13 +572,13 @@
             line-height: 1; /* Aligns the icon better */
         }
         .topic-button.active .delete-topic-btn {
-            color: white; /* White icon for active topic */
+            color: rgb(255, 255, 255); /* White icon for active topic */
         }
         .topic-button .delete-topic-btn:hover {
-            color: red;
+            color: rgb(255, 0, 0); /* Red */
         }
         .topic-button.active .delete-topic-btn:hover {
-            color: #ffcccc; /* Lighter red on hover for active topic */
+            color: rgb(255, 204, 204); /* Lighter red on hover for active topic */
         }
 
         /* Hide add vocab section and vocabulary list if no topic selected */
@@ -580,6 +586,41 @@
             display: none;
         }
 
+        /* NEW: Styles for practice statistics */
+        .practice-stats {
+            background: rgb(255, 255, 255); /* White */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px var(--shadow-light);
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+            display: none; /* Hidden by default */
+        }
+        .practice-stats p {
+            margin: 5px 0;
+            color: var(--text-color);
+        }
+        .practice-stats .correct {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        .practice-stats .incorrect {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        /* NEW: Styles for the incorrect words practice button */
+        .practice-buttons-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        .practice-buttons-group .main-button {
+            margin-top: 0; /* Override default margin */
+        }
 
         /* --- Responsive Design --- */
         @media (max-width: 768px) {
@@ -591,7 +632,7 @@
                 width: 100%;
                 height: auto;
                 position: relative;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                box-shadow: 0 2px 5px var(--shadow-light);
                 padding: 10px 0;
             }
             .sidebar h2 {
@@ -685,6 +726,10 @@
             .topic-list {
                 justify-content: flex-start;
             }
+             .practice-buttons-group {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -762,6 +807,7 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                 <div class="topic-list" id="practiceTopicList">
                     </div>
                 <p id="noPracticeTopicSelectedMessage" style="text-align: center; color: #777; margin-top: 10px; display: none;">Vui lòng chọn ít nhất một chủ đề để bắt đầu luyện tập.</p>
+                <p id="noIncorrectWordsMessage" style="text-align: center; color: #777; margin-top: 10px; display: none;">Chưa có từ sai để luyện tập. Hãy bắt đầu luyện tập thông thường trước!</p>
             </div>
 
 
@@ -781,9 +827,17 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                     <p class="correct-feedback" id="correctFeedback">Chính xác!</p>
                     <p class="incorrect-feedback" id="incorrectFeedback">Sai rồi!</p>
                 </div>
-                 <button class="main-button" id="startPracticeButton" style="margin-top: 20px;"><i class="fas fa-play"></i> Bắt đầu luyện tập</button>
-                 <button class="main-button" id="endPracticeButton" style="margin-top: 10px; background-color: #f44336; display: none;"><i class="fas fa-stop"></i> Kết thúc luyện tập</button>
+                <div class="practice-buttons-group">
+                    <button class="main-button" id="startPracticeButton"><i class="fas fa-play"></i> Bắt đầu luyện tập</button>
+                    <button class="main-button" id="startIncorrectPracticeButton" style="background-color: rgb(255, 140, 0);"><i class="fas fa-redo-alt"></i> Luyện tập Từ Sai</button>
+                    <button class="main-button" id="endPracticeButton" style="background-color: var(--error-color); display: none;"><i class="fas fa-stop"></i> Kết thúc luyện tập</button>
+                </div>
                  <p id="practiceEmptyMessage" style="text-align: center; color: #777; display: none;">Chưa có từ vựng nào để luyện tập. Hãy thêm từ ở mục "Từ vựng"!</p>
+                 <div class="practice-stats" id="practiceStats">
+                    <h3>Thống kê luyện tập</h3>
+                    <p>Số câu đúng: <span id="correctCount" class="correct">0</span></p>
+                    <p>Số câu sai: <span id="incorrectCount" class="incorrect">0</span></p>
+                 </div>
             </div>
         </div>
 
@@ -836,6 +890,13 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
         // Global variable to store selected topics for practice
         let selectedPracticeTopics = [];
 
+        // Variables for scorekeeping
+        let correctAnswersCount = 0;
+        let incorrectAnswersCount = 0;
+
+        // NEW: Global Set to store incorrect words for review
+        let incorrectWordsForReview = new Set();
+
 
         document.addEventListener('DOMContentLoaded', function() {
             // Lấy các phần tử DOM cần thiết
@@ -863,13 +924,21 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
             const correctFeedback = document.getElementById('correctFeedback');
             const incorrectFeedback = document.getElementById('incorrectFeedback');
             const startPracticeButton = document.getElementById('startPracticeButton');
-            const endPracticeButton = document.getElementById('endPracticeButton'); // NEW
+            const endPracticeButton = document.getElementById('endPracticeButton');
             const practiceEmptyMessage = document.getElementById('practiceEmptyMessage');
+            // Scorekeeping elements
+            const practiceStatsContainer = document.getElementById('practiceStats');
+            const correctCountDisplay = document.getElementById('correctCount');
+            const incorrectCountDisplay = document.getElementById('incorrectCount');
 
             // Nút audio và repeat cho thẻ luyện tập
             const playUsAudioPracticeButton = document.getElementById('playUsAudioPractice');
             const playUkAudioPracticeButton = document.getElementById('playUkAudioPractice');
             const repeatAudioPracticeButton = document.getElementById('repeatAudioPractice');
+
+            // NEW: Practice Incorrect Words button
+            const startIncorrectPracticeButton = document.getElementById('startIncorrectPracticeButton');
+            const noIncorrectWordsMessage = document.getElementById('noIncorrectWordsMessage');
 
 
             // Các phần tử cho quản lý chủ đề
@@ -893,6 +962,7 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                 renderTopics(); // Render lại danh sách chủ đề
                 renderVocabulary(currentTopic); // Hiển thị từ vựng của chủ đề hiện tại
                 updateTopicVisibility(); // Cập nhật hiển thị của các phần liên quan đến chủ đề
+                practiceStatsContainer.style.display = 'none'; // Hide stats when switching back to vocab
             });
 
             practiceLink.addEventListener('click', function(e) {
@@ -903,7 +973,11 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                 practiceLink.classList.add('active');
                 renderPracticeTopics(); // Render practice topic buttons
                 resetPractice(); // Reset và bắt đầu phiên luyện tập mới khi chuyển tab
-                endPracticeButton.style.display = 'none'; // NEW: Ensure end practice button is hidden when entering practice section initially
+                endPracticeButton.style.display = 'none'; // Ensure end practice button is hidden when entering practice section initially
+                startPracticeButton.style.display = 'inline-block'; // Ensure start practice button is visible
+                startIncorrectPracticeButton.style.display = 'inline-block'; // Ensure incorrect practice button is visible
+                practiceStatsContainer.style.display = 'none'; // Hide stats when entering practice
+                noIncorrectWordsMessage.style.display = 'none'; // Hide incorrect words message
             });
 
 
@@ -945,7 +1019,7 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                         <p class="pronunciation">${vocab.pronunciation}</p>
                         <p class="definition"><strong>Nghĩa:</strong> ${vocab.meaning}</p>
                         ${vocab.englishDefinition ? `<p class="definition"><strong>Mô tả tiếng Anh:</strong> ${vocab.englishDefinition}</p>` : ''}
-                        <button class="main-button delete-vocab-btn" data-topic="${topicName}" data-index="${index}" style="background-color: #f44336; margin-top: 10px;">Xóa</button>
+                        <button class="main-button delete-vocab-btn" data-topic="${topicName}" data-index="${index}" style="background-color: var(--error-color); margin-top: 10px;">Xóa</button>
                     `;
                     vocabularyListContainer.appendChild(vocabCard);
                 });
@@ -1101,6 +1175,7 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
             // --- Quản lý trạng thái và lưu trữ dữ liệu ---
             function saveVocabularyData() {
                 localStorage.setItem('vocabularyData', JSON.stringify(vocabularyData));
+                localStorage.setItem('incorrectWordsForReview', JSON.stringify(Array.from(incorrectWordsForReview))); // NEW: Save incorrect words
             }
 
             function loadVocabularyData() {
@@ -1114,12 +1189,28 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                     }
                 }
                 // Nếu không có dữ liệu, vocabularyData vẫn giữ giá trị mẫu ban đầu
+
+                // NEW: Load incorrect words
+                const storedIncorrectWords = localStorage.getItem('incorrectWordsForReview');
+                if (storedIncorrectWords) {
+                    // Reconstruct Set from stored array to ensure uniqueness
+                    incorrectWordsForReview = new Set(JSON.parse(storedIncorrectWords).map(wordObj => {
+                        // Ensure it's a string comparison for "word" property
+                        // When loading, reconstruct full vocab objects from the main vocabularyData
+                        // This assumes the `word` is unique enough to identify the vocab object
+                        for (const topic in vocabularyData) {
+                            const foundVocab = vocabularyData[topic].find(v => v.word === wordObj.word);
+                            if (foundVocab) return foundVocab;
+                        }
+                        return wordObj; // Fallback if not found (shouldn't happen if data is consistent)
+                    }).filter(Boolean)); // Filter out any null/undefined if word not found
+                }
             }
 
             function showStatus(type, message, element = addVocabStatus) {
                 element.textContent = message;
                 element.style.display = 'block';
-                element.style.color = type === 'success' ? 'green' : 'red';
+                element.style.color = type === 'success' ? 'var(--success-color)' : 'var(--error-color)';
                 setTimeout(() => {
                     element.style.display = 'none';
                 }, 3000); // Ẩn sau 3 giây
@@ -1147,7 +1238,7 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
 
             function renderTopics() {
                 topicListContainer.innerHTML = ''; // Clear existing buttons
-                practiceTopicListContainer.innerHTML = ''; // Clear practice topic buttons as well
+                // practiceTopicListContainer.innerHTML = ''; // No, renderPracticeTopics handles this now
 
                 const topics = Object.keys(vocabularyData);
 
@@ -1204,6 +1295,8 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
 
                 if (topics.length === 0) {
                     noPracticeTopicSelectedMessage.style.display = 'block';
+                    // Also ensure no topics are selected for practice
+                    selectedPracticeTopics = [];
                     return;
                 } else {
                     noPracticeTopicSelectedMessage.style.display = 'none';
@@ -1241,10 +1334,19 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
 
             function deleteTopic(topicName) {
                 if (vocabularyData[topicName]) {
+                    // NEW: Remove words from incorrectWordsForReview if they belong to the deleted topic
+                    vocabularyData[topicName].forEach(vocab => {
+                        incorrectWordsForReview.delete(vocab);
+                    });
                     delete vocabularyData[topicName];
                     saveVocabularyData();
                     if (currentTopic === topicName) {
                         currentTopic = null; // Bỏ chọn chủ đề nếu nó bị xóa
+                    }
+                    // If a deleted topic was selected for practice, remove it
+                    const practiceTopicIndex = selectedPracticeTopics.indexOf(topicName);
+                    if (practiceTopicIndex > -1) {
+                        selectedPracticeTopics.splice(practiceTopicIndex, 1);
                     }
                     renderTopics(); // Render lại danh sách chủ đề
                     renderVocabulary(currentTopic); // Cập nhật hiển thị từ vựng
@@ -1267,27 +1369,58 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
             }
 
             // --- Chức năng luyện tập (Flashcard) ---
-            startPracticeButton.addEventListener('click', startPractice);
-            endPracticeButton.addEventListener('click', endPractice); // NEW
+            startPracticeButton.addEventListener('click', () => startPractice(false)); // Regular practice
+            startIncorrectPracticeButton.addEventListener('click', () => startPractice(true)); // Practice incorrect words
+            endPracticeButton.addEventListener('click', endPractice);
 
-            function startPractice() {
-                if (selectedPracticeTopics.length === 0) {
-                    showStatus('error', 'Vui lòng chọn ít nhất một chủ đề để luyện tập.', noPracticeTopicSelectedMessage);
-                    noPracticeTopicSelectedMessage.style.display = 'block'; // Make sure message is visible
-                    return;
+            function startPractice(isIncorrectWordsPractice) {
+                // Reset counts for a new session
+                correctAnswersCount = 0;
+                incorrectAnswersCount = 0;
+                updatePracticeStatsDisplay();
+                practiceStatsContainer.style.display = 'none'; // Hide stats at the start of new session
+                noIncorrectWordsMessage.style.display = 'none'; // Hide incorrect words message
+
+                if (isIncorrectWordsPractice) {
+                    if (incorrectWordsForReview.size === 0) {
+                        showStatus('error', 'Chưa có từ sai nào để luyện tập. Hãy bắt đầu luyện tập thông thường trước!', noIncorrectWordsMessage);
+                        noIncorrectWordsMessage.style.display = 'block';
+                        return;
+                    }
+                    shuffledVocabulary = Array.from(incorrectWordsForReview); // Use incorrect words
+                    incorrectWordsForReview.clear(); // Clear the set after starting review
+                    saveVocabularyData(); // Save the cleared set to local storage
                 } else {
-                     noPracticeTopicSelectedMessage.style.display = 'none';
+                    if (selectedPracticeTopics.length === 0) {
+                        showStatus('error', 'Vui lòng chọn ít nhất một chủ đề để luyện tập.', noPracticeTopicSelectedMessage);
+                        noPracticeTopicSelectedMessage.style.display = 'block';
+                        return;
+                    } else {
+                        noPracticeTopicSelectedMessage.style.display = 'none';
+                    }
+
+                    // Tập hợp tất cả từ vựng từ các chủ đề đã chọn
+                    let allVocabForPractice = [];
+                    selectedPracticeTopics.forEach(topic => {
+                        if (vocabularyData[topic]) {
+                            allVocabForPractice = allVocabForPractice.concat(vocabularyData[topic]);
+                        }
+                    });
+
+                    // Ensure no duplicate words are in the practice set if they exist across topics
+                    const uniqueWords = new Set();
+                    shuffledVocabulary = [];
+                    allVocabForPractice.forEach(vocab => {
+                        // Use word as a unique identifier for duplication check
+                        if (!uniqueWords.has(vocab.word.toLowerCase())) {
+                            uniqueWords.add(vocab.word.toLowerCase());
+                            shuffledVocabulary.push(vocab);
+                        }
+                    });
                 }
 
-                // Tập hợp tất cả từ vựng từ các chủ đề đã chọn
-                let allVocabForPractice = [];
-                selectedPracticeTopics.forEach(topic => {
-                    if (vocabularyData[topic]) {
-                        allVocabForPractice = allVocabForPractice.concat(vocabularyData[topic]);
-                    }
-                });
 
-                if (allVocabForPractice.length === 0) {
+                if (shuffledVocabulary.length === 0) {
                     practiceEmptyMessage.style.display = 'block';
                     resetPracticeCard();
                     return;
@@ -1296,9 +1429,10 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                 }
 
                 // Xáo trộn danh sách từ vựng và bắt đầu luyện tập
-                shuffledVocabulary = shuffleArray(allVocabForPractice);
+                shuffledVocabulary = shuffleArray(shuffledVocabulary); // Shuffle the list
                 currentPracticeIndex = 0;
                 startPracticeButton.style.display = 'none';
+                startIncorrectPracticeButton.style.display = 'none';
                 endPracticeButton.style.display = 'inline-block'; // Show end button
                 nextWord();
             }
@@ -1306,9 +1440,12 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
             function endPractice() {
                 resetPractice();
                 startPracticeButton.style.display = 'inline-block'; // Show start button
+                startIncorrectPracticeButton.style.display = 'inline-block'; // Show incorrect practice button
                 endPracticeButton.style.display = 'none'; // Hide end button
                 practiceEmptyMessage.style.display = 'none'; // Hide if was showing
                 noPracticeTopicSelectedMessage.style.display = 'none'; // Hide if was showing
+                noIncorrectWordsMessage.style.display = 'none'; // Hide if was showing
+                practiceStatsContainer.style.display = 'block'; // Show stats when practice ends
             }
 
             function resetPractice() {
@@ -1316,6 +1453,7 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                 currentPracticeIndex = 0;
                 currentPracticeVocab = null;
                 resetPracticeCard();
+                // Do NOT reset counts here, they are reset in startPractice() for a new session
             }
 
 
@@ -1333,7 +1471,14 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
 
 
                     // Tạo các lựa chọn nghĩa
-                    const options = generateMeaningOptions(currentPracticeVocab.meaning, shuffledVocabulary, currentPracticeVocab.word);
+                    // Ensure options are generated from *all* available meanings, not just the shuffled set
+                    let allAvailableMeanings = [];
+                    Object.values(vocabularyData).forEach(topicVocabs => {
+                        topicVocabs.forEach(vocab => {
+                            allAvailableMeanings.push(vocab.meaning);
+                        });
+                    });
+                    const options = generateMeaningOptions(currentPracticeVocab.meaning, allAvailableMeanings, currentPracticeVocab.word);
                     meaningOptionsContainer.innerHTML = ''; // Clear previous options
                     options.forEach(option => {
                         const button = document.createElement('button');
@@ -1349,33 +1494,43 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                     englishDescriptionDisplay.textContent = 'Bạn đã luyện tập hết tất cả từ vựng trong chủ đề đã chọn.';
                     meaningOptionsContainer.innerHTML = '';
                     startPracticeButton.style.display = 'inline-block'; // Hiển thị lại nút Bắt đầu luyện tập
+                    startIncorrectPracticeButton.style.display = 'inline-block'; // Show incorrect practice button
                     endPracticeButton.style.display = 'none'; // Ẩn nút Kết thúc
+                    practiceStatsContainer.style.display = 'block'; // Show stats when practice ends
                 }
             }
 
-            function generateMeaningOptions(correctMeaning, allVocabs, currentWord) {
-                let options = [correctMeaning]; // Bắt đầu với đáp án đúng
-                let incorrectMeanings = allVocabs
-                    .filter(vocab => vocab.meaning !== correctMeaning && vocab.word !== currentWord)
-                    .map(vocab => vocab.meaning);
+            // Modified to use a global pool of meanings for options
+            function generateMeaningOptions(correctMeaning, allMeaningsPool, currentWord) {
+                let options = [correctMeaning]; // Start with the correct answer
+                const uniqueMeaningsPool = Array.from(new Set(allMeaningsPool)); // Get unique meanings from all vocabs
 
-                incorrectMeanings = shuffleArray(Array.from(new Set(incorrectMeanings))); // Xáo trộn và loại bỏ trùng lặp
+                // Filter out the correct meaning and meanings that might be from the same word (less common but good to prevent)
+                let incorrectMeaningsCandidates = uniqueMeaningsPool.filter(m => m !== correctMeaning);
 
-                // Thêm các đáp án sai từ danh sách các nghĩa khác
-                for (let i = 0; options.length < NUM_OPTIONS && i < incorrectMeanings.length; i++) {
-                    options.push(incorrectMeanings[i]);
+                incorrectMeaningsCandidates = shuffleArray(incorrectMeaningsCandidates); // Shuffle candidates
+
+                // Add incorrect options from the candidates
+                for (let i = 0; options.length < NUM_OPTIONS && i < incorrectMeaningsCandidates.length; i++) {
+                    options.push(incorrectMeaningsCandidates[i]);
                 }
 
-                // Nếu không đủ đáp án sai, thêm các chuỗi chung
+                // If still not enough options, add generic ones (fallback)
                 const genericMeanings = ["Học tiếng Anh", "Từ vựng khó", "Cụm từ hay", "Kiến thức chung", "Từ đồng nghĩa"];
                 for (let i = 0; options.length < NUM_OPTIONS && i < genericMeanings.length; i++) {
-                    if (!options.includes(genericMeanings[i])) { // Đảm bảo không trùng với các lựa chọn đã có
+                    if (!options.includes(genericMeanings[i])) { // Ensure not duplicating existing choices
                         options.push(genericMeanings[i]);
                     }
                 }
+                
+                // Trim the array to NUM_OPTIONS if it accidentally got more (shouldn't with the loop logic, but as a safeguard)
+                if (options.length > NUM_OPTIONS) {
+                    options = options.slice(0, NUM_OPTIONS);
+                }
 
-                return shuffleArray(options); // Xáo trộn lại để đáp án đúng không luôn ở một vị trí
+                return shuffleArray(options); // Shuffle the final set of options
             }
+
 
             function checkAnswer(selectedOption, correctMeaning, clickedButton) {
                 const allButtons = meaningOptionsContainer.querySelectorAll('.meaning-option-button');
@@ -1384,25 +1539,32 @@ Goodbye, Tạm biệt, /ˌɡʊdˈbaɪ/, A farewell"></textarea>
                 if (selectedOption === correctMeaning) {
                     clickedButton.classList.add('correct');
                     practiceCard.classList.add('is-correct');
-                    setTimeout(() => {
-                        currentPracticeIndex++;
-                        nextWord();
-                    }, 1000); // Chuyển sang từ tiếp theo sau 1 giây
+                    correctAnswersCount++; // Increment correct count
                 } else {
                     clickedButton.classList.add('incorrect');
                     practiceCard.classList.add('is-incorrect');
+                    incorrectAnswersCount++; // Increment incorrect count
+                    incorrectWordsForReview.add(currentPracticeVocab); // NEW: Add to incorrect words for review
+                    saveVocabularyData(); // NEW: Save updated incorrect words list
                     // Tìm và làm nổi bật đáp án đúng
                     allButtons.forEach(button => {
                         if (button.textContent === correctMeaning) {
                             button.classList.add('correct');
                         }
                     });
-                    setTimeout(() => {
-                         // Cho phép người dùng thử lại hoặc bỏ qua
-                        currentPracticeIndex++; // Tăng index để chuyển sang từ tiếp theo sau khi người dùng xem đáp án
-                        nextWord();
-                    }, 2000); // Hiển thị đáp án đúng trong 2 giây rồi chuyển
                 }
+                updatePracticeStatsDisplay(); // Update stats display
+
+                setTimeout(() => {
+                    currentPracticeIndex++;
+                    nextWord();
+                }, 1000); // Chuyển sang từ tiếp theo sau 1 giây
+            }
+
+            // Function to update practice statistics display
+            function updatePracticeStatsDisplay() {
+                correctCountDisplay.textContent = correctAnswersCount;
+                incorrectCountDisplay.textContent = incorrectAnswersCount;
             }
 
 
